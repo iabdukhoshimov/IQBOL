@@ -1,0 +1,495 @@
+@import "tailwindcss";
+
+/*
+ * "Noir & Champagne" — warm onyx, ivory and champagne gold.
+ * The lux-* colours are theme-independent: they paint the always-dark
+ * presentation surfaces (heroes, menu cards, CTA) in both themes.
+ */
+:root {
+  --lux-ink: #0e0c09;
+  --lux-ink-soft: #1a1712;
+  --lux-gold: #c9a35a;
+  --lux-gold-deep: #8a6526;
+  --lux-champagne: #ebd6a6;
+  --lux-pearl: #f8edd3;
+}
+
+:root,
+:root[data-theme="light"] {
+  --background: #faf7f1;
+  --foreground: #17140f;
+  --card: #ffffff;
+  --card-foreground: #17140f;
+  --border: #e7decd;
+  --input: #e1d6c1;
+  --muted: #f2ece1;
+  --muted-foreground: #6b6152;
+  --primary: #17140f;
+  --primary-foreground: #faf7f1;
+  --accent: #8a6526;
+  --accent-foreground: #fffbf2;
+  --destructive: #b42318;
+  --destructive-foreground: #fef3f2;
+  --success: #1e7a55;
+  --success-foreground: #effaf5;
+  --ring: #a8813a;
+  --radius: 0.75rem;
+  --surface-glow: rgba(138, 101, 38, 0.1);
+  --shadow-tint: 23, 20, 15;
+}
+
+:root[data-theme="dark"] {
+  --background: #0e0c09;
+  --foreground: #f3ecdd;
+  --card: #18150f;
+  --card-foreground: #f3ecdd;
+  --border: #2e281d;
+  --input: #2e281d;
+  --muted: #211d15;
+  --muted-foreground: #b3a68c;
+  --primary: #ebd6a6;
+  --primary-foreground: #17140f;
+  --accent: #d4af62;
+  --accent-foreground: #17140f;
+  --destructive: #f97066;
+  --destructive-foreground: #2a0a08;
+  --success: #5dcca0;
+  --success-foreground: #062016;
+  --ring: #d4af62;
+  --surface-glow: rgba(212, 175, 98, 0.12);
+  --shadow-tint: 0, 0, 0;
+}
+
+/* Presentation uses the same light/dark tokens as the dashboard */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-ring: var(--ring);
+  --color-ink: var(--lux-ink);
+  --color-ink-soft: var(--lux-ink-soft);
+  --color-gold: var(--lux-gold);
+  --color-gold-deep: var(--lux-gold-deep);
+  --color-champagne: var(--lux-champagne);
+  --color-pearl: var(--lux-pearl);
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 0.2rem);
+  --radius-sm: calc(var(--radius) - 0.35rem);
+  --font-sans: var(--font-manrope);
+  --font-display: var(--font-cormorant);
+  --font-mono: var(--font-manrope);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-manrope), system-ui, sans-serif;
+}
+
+.font-display {
+  font-family: var(--font-cormorant), Georgia, serif;
+}
+
+/* In a layer so border-* colour utilities (blue frames, selected states) can
+   override it — unlayered, this beat every utility in Tailwind v4. */
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+}
+
+/* Native pickers (date wheel, select list) follow the site's theme. */
+:root {
+  color-scheme: light;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+  }
+}
+
+/* Date fields on iPad/iPhone and Android tablets: Safari gives them a fixed
+   intrinsic width that ignores width:100% and spills into the next column,
+   and shows an empty, collapsed box. Let them shrink and keep their height. */
+@layer base {
+  input[type="date"],
+  input[type="datetime-local"],
+  input[type="time"],
+  input[type="month"] {
+    -webkit-appearance: none;
+    appearance: none;
+    min-width: 0;
+    max-width: 100%;
+    min-height: 2.5rem;
+  }
+  input::-webkit-date-and-time-value {
+    min-height: 1.25em;
+    text-align: left;
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes soft-scale {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.5s ease-out both;
+}
+
+.animate-soft-scale {
+  animation: soft-scale 0.45s ease-out both;
+}
+
+@keyframes dissolve-fade {
+  0% {
+    opacity: 1;
+    filter: blur(0px);
+    transform: scale(1);
+  }
+  55% {
+    opacity: 0.4;
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 0;
+    filter: blur(6px);
+    transform: scale(1.02);
+  }
+}
+
+@keyframes dissolve-particle {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(1);
+  }
+  12% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--dx), var(--dy)) scale(0.25);
+  }
+}
+
+.animate-dissolve-fade {
+  animation: dissolve-fade 1.1s ease-in forwards;
+}
+
+.animate-dissolve-particle {
+  animation: dissolve-particle 1s ease-out forwards;
+}
+
+/* iOS-style toggle switch (Switch component) */
+.switch {
+  --switch-width: 46px;
+  --switch-height: 24px;
+  --switch-bg: rgb(131, 131, 131);
+  --switch-checked-bg: var(--accent);
+  --switch-offset: calc((var(--switch-height) - var(--circle-diameter)) / 2);
+  --switch-transition: all 0.2s cubic-bezier(0.27, 0.2, 0.25, 1.51);
+  --circle-diameter: 18px;
+  --circle-bg: #fff;
+  --circle-shadow: 1px 1px 2px rgba(146, 146, 146, 0.45);
+  --circle-checked-shadow: -1px 1px 2px rgba(163, 163, 163, 0.45);
+  --icon-cross-color: var(--switch-bg);
+  --icon-cross-size: 6px;
+  --icon-checkmark-color: var(--switch-checked-bg);
+  --icon-checkmark-size: 10px;
+  --effect-width: calc(var(--circle-diameter) / 2);
+  --effect-height: calc(var(--effect-width) / 2 - 1px);
+  --effect-bg: var(--circle-bg);
+  --effect-border-radius: 1px;
+  --effect-transition: all 0.2s ease-in-out;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.switch input {
+  display: none;
+}
+
+.switch svg {
+  transition: var(--icon-transition, all 0.2s cubic-bezier(0.27, 0.2, 0.25, 1.51));
+  position: absolute;
+  height: auto;
+}
+
+.switch .checkmark {
+  width: var(--icon-checkmark-size);
+  color: var(--icon-checkmark-color);
+  transform: scale(0);
+}
+
+.switch .cross {
+  width: var(--icon-cross-size);
+  color: var(--icon-cross-color);
+}
+
+.switch .slider {
+  box-sizing: border-box;
+  width: var(--switch-width);
+  height: var(--switch-height);
+  background: var(--switch-bg);
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  transition: var(--switch-transition);
+  flex-shrink: 0;
+}
+
+.switch .circle {
+  width: var(--circle-diameter);
+  height: var(--circle-diameter);
+  background: var(--circle-bg);
+  border-radius: inherit;
+  box-shadow: var(--circle-shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--circle-transition, var(--switch-transition));
+  z-index: 1;
+  position: absolute;
+  left: var(--switch-offset);
+}
+
+.switch .slider::before {
+  content: "";
+  position: absolute;
+  width: var(--effect-width);
+  height: var(--effect-height);
+  left: calc(var(--switch-offset) + (var(--effect-width) / 2));
+  background: var(--effect-bg);
+  border-radius: var(--effect-border-radius);
+  transition: var(--effect-transition);
+}
+
+.switch input:disabled + .slider {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.switch input:checked + .slider {
+  background: var(--switch-checked-bg);
+}
+
+.switch input:checked + .slider .checkmark {
+  transform: scale(1);
+}
+
+.switch input:checked + .slider .cross {
+  transform: scale(0);
+}
+
+.switch input:checked + .slider::before {
+  left: calc(100% - var(--effect-width) - (var(--effect-width) / 2) - var(--switch-offset));
+}
+
+.switch input:checked + .slider .circle {
+  left: calc(100% - var(--circle-diameter) - var(--switch-offset));
+  box-shadow: var(--circle-checked-shadow);
+}
+
+/* ---------- Client presentation ("Zarhal taklifnoma") ---------- */
+
+@keyframes ken-burns {
+  from {
+    transform: scale(1.08);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.animate-ken-burns {
+  animation: ken-burns 14s ease-out both;
+}
+
+@keyframes scroll-cue {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateY(6px);
+    opacity: 1;
+  }
+}
+
+.animate-scroll-cue {
+  animation: scroll-cue 2.2s ease-in-out infinite;
+}
+
+/* Scroll-triggered reveal; <Reveal> flips data-shown once it enters view. */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.reveal[data-shown="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .animate-ken-burns,
+  .animate-scroll-cue {
+    animation: none;
+  }
+}
+
+/* Champagne-gold foil for prices and headings on the presentation. */
+.text-gilded {
+  background: linear-gradient(
+    100deg,
+    var(--lux-gold-deep) 0%,
+    var(--lux-pearl) 36%,
+    var(--lux-gold) 58%,
+    #fff6e0 80%,
+    #6b4c1b 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* On ivory the foil darkens to antique gold so it stays readable. */
+.text-gilded-adaptive {
+  background: linear-gradient(100deg, #3d2c10 0%, var(--lux-gold-deep) 48%, #5a4118 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+:root[data-theme="dark"] .text-gilded-adaptive {
+  background: linear-gradient(
+    100deg,
+    var(--lux-gold-deep) 0%,
+    var(--lux-pearl) 36%,
+    var(--lux-gold) 58%,
+    #fff6e0 80%,
+    #6b4c1b 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+/* Polished gold bar — VIP badges and the call button. */
+.bg-gold-foil {
+  background: linear-gradient(
+    100deg,
+    var(--lux-gold-deep) 0%,
+    var(--lux-champagne) 30%,
+    var(--lux-pearl) 50%,
+    var(--lux-gold) 72%,
+    var(--lux-gold-deep) 100%
+  );
+}
+
+.gold-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 9999px;
+  background: linear-gradient(
+    to right,
+    var(--accent) 0%,
+    var(--accent) var(--fill, 50%),
+    var(--muted) var(--fill, 50%),
+    var(--muted) 100%
+  );
+  outline: none;
+}
+
+.gold-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 9999px;
+  background: var(--card);
+  border: 2px solid var(--accent);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  cursor: grab;
+}
+
+.gold-range::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 9999px;
+  background: var(--card);
+  border: 2px solid var(--accent);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  cursor: grab;
+}
+
+.gold-range:focus-visible {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+/*
+ * Big screens (Full HD TVs, 2K/4K monitors in the hall): grow the root size
+ * so the whole rem-based presentation scales up proportionally instead of
+ * floating small in the middle. Scoped to presentation pages only.
+ */
+@media (min-width: 1600px) {
+  :root:has(.presentation-root) {
+    font-size: clamp(16px, calc(0.4vw + 9px), 22px);
+  }
+}
+
+/*
+ * The staff and chef screens on very wide monitors (2K at 100% scaling, 4K):
+ * the same idea, starting later and growing more gently, so tables and forms
+ * stay readable from a normal sitting distance instead of shrinking to dust.
+ */
+@media (min-width: 2200px) {
+  :root {
+    font-size: clamp(16px, calc(0.4vw + 7.2px), 24px);
+  }
+}
