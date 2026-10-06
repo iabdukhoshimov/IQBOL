@@ -53,7 +53,10 @@ export class UploadsController {
   @SkipThrottle()
   @Get('files/*')
   async serve(@Req() req: Request, @Res() res: Response) {
-    const opened = await this.uploads.openLocal(keyFromRequest(req));
+    const key = keyFromRequest(req);
+    const s3Url = await this.uploads.openS3(key);
+    if (s3Url) return res.redirect(302, s3Url);
+    const opened = await this.uploads.openLocal(key);
     // sendFile answers Range requests (206 Partial Content) and conditional
     // GETs: videos start at once and can be scrubbed, and iOS Safari refuses
     // to play video from a server without Range support.

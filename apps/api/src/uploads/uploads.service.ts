@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { mkdir, stat, unlink, writeFile } from 'node:fs/promises';
 import * as path from 'node:path';
@@ -118,9 +118,7 @@ export class UploadsService {
       { expiresIn: 300 },
     );
 
-    const publicBase = this.config.getOrThrow<string>('S3_PUBLIC_BASE_URL');
-    const publicUrl = `${publicBase.replace(/\/$/, '')}/${key}`;
-    return { uploadUrl, publicUrl, key };
+    return { uploadUrl, publicUrl: `/uploads/${key}`, key };
   }
 
   async saveLocal(
@@ -232,6 +230,18 @@ export class UploadsService {
       });
 
     return true;
+  }
+
+  async openS3(key: string): Promise<string | null> {
+    if (this.useLocal()) return null;
+    return getSignedUrl(
+      this.s3(),
+      new GetObjectCommand({
+        Bucket: this.config.getOrThrow<string>('S3_BUCKET'),
+        Key: key,
+      }),
+      { expiresIn: 3600 },
+    );
   }
 
   private s3(): S3Client {
