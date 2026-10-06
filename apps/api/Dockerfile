@@ -38,6 +38,7 @@ ENV S3_SECRET_ACCESS_KEY="tsec_RgJZ7-N4cjfxY-xsLWcPuEd8DZVqHGA8Qb_tsYeQDXx0ga8zT
 ENV S3_PUBLIC_BASE_URL="https://t3.storageapi.dev/roomy-room-isg3shja2qfa12"
 ENV SEED_SUPER_ADMIN_PHONE="+998901234567"
 ENV SEED_SUPER_ADMIN_PASSWORD="TestAdmin2024!"
+ENV WEB_ORIGIN="https://cooperative-strength-production-e477.up.railway.app"
 COPY --from=build /app /app
 WORKDIR /app/apps/api
 EXPOSE 3001
